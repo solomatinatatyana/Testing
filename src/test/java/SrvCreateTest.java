@@ -76,8 +76,7 @@ public class SrvCreateTest {
         //System.out.println("List of OperationData: ");
         //System.out.println();
 
-        //System.out.println("Root element " + document.getDocumentElement().getNodeName());
-        System.out.println("============================");
+
 
         NodeList nodeList = document.getElementsByTagName("OperationData");
 
