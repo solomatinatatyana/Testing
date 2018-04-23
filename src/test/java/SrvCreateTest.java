@@ -34,17 +34,36 @@ public class SrvCreateTest {
 
     @DataProvider(name = "path")
     public Object[][] wrongData(){
+        DocumentBuilder documentBuilder = null;
+        try {
+            documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        Document document = null;
+        try {
+            document = documentBuilder.parse("SrvCreate.xml");
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    return new Object[][]{
-            {"SrvCreate.xml"},
-            {"SrvCreate2.xml"}
-    };
+        assert document != null;
+        NodeList nodeList = document.getElementsByTagName("OperationData");
+        Object[][] res = new Object[nodeList.getLength()][1];
+        for (int i = 0; i < nodeList.getLength(); i++) {
+
+            res[i][0] = nodeList.item(i);
+
+        }
+        return res;
     }
 
     @Test(dataProvider = "path")
-    public void checkContent(String path){
-
-        DocumentBuilder documentBuilder = null;
+    public void checkContent(Node node){
+        SoftAssert softAssert = new SoftAssert();
+        /*DocumentBuilder documentBuilder = null;
         try {
             documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         } catch (ParserConfigurationException e) {
@@ -63,12 +82,12 @@ public class SrvCreateTest {
         SoftAssert softAssert = new SoftAssert();
         for (int i = 0; i < nodeList.getLength(); i++) {
 
-            Node node = nodeList.item(i);
+            Node node = nodeList.item(i);*/
             System.out.println();
 
-            System.out.println("текущий элемент " + node.getNodeName() + " " + (i+1));
+            System.out.println("текущий элемент " + node.getNodeName());
 
-            if (Node.ELEMENT_NODE == node.getNodeType()) {
+        if (Node.ELEMENT_NODE == node.getNodeType()) {
                 Element element = (Element) node;
 
                 String priority = element.getElementsByTagName("Priority").item(0).getTextContent();
@@ -112,8 +131,7 @@ public class SrvCreateTest {
 
                 }
             }
-        }
         softAssert.assertAll();
-    }
+        }
 
-}
+    }
