@@ -32,30 +32,17 @@ public class SrvCreateTest {
         System.out.println("DUL: " + dul);
     }
 
-    @BeforeMethod
-    public void setUp() { }
-
     @DataProvider(name = "path")
     public Object[][] wrongData(){
+
     return new Object[][]{
             {"SrvCreate.xml"},
             {"SrvCreate2.xml"}
     };
     }
 
-    /*@Test(dataProvider = "test")
-    public void testProvider(String p, String sId, String mId, String fn, String ln, String mn, String d){
-        System.out.println("String: " + p + ", String: " + sId + ", String: " + mId +
-                            ", String: " + fn + ", String: " + ln + ", String: " + mn + ", String: "+ d);
-    }*/
     @Test(dataProvider = "path")
     public void checkContent(String path){
-        byte max_byte = Byte.MAX_VALUE;
-        byte min_byte = Byte.MIN_VALUE;
-        int max_int = Integer.MAX_VALUE;
-        int min_int = Integer.MIN_VALUE;
-
-        //readXml(path);
 
         DocumentBuilder documentBuilder = null;
         try {
@@ -72,14 +59,8 @@ public class SrvCreateTest {
             e.printStackTrace();
         }
 
-        Node root = document.getDocumentElement();
-        //System.out.println("List of OperationData: ");
-        //System.out.println();
-
-
-
         NodeList nodeList = document.getElementsByTagName("OperationData");
-
+        SoftAssert softAssert = new SoftAssert();
         for (int i = 0; i < nodeList.getLength(); i++) {
 
             Node node = nodeList.item(i);
@@ -101,33 +82,38 @@ public class SrvCreateTest {
                 try {
                     StabId = Byte.parseByte(element.getElementsByTagName("StabId").item(0).getTextContent());
                     MDMId = Integer.parseInt(element.getElementsByTagName("MDMId").item(0).getTextContent());
-                    SoftAssert softAssert = new SoftAssert();
-                    softAssert.assertTrue(StabId > 0,"Текущее значение тега StabId " + StabId + " ,а должно быть больше 0");
-                    softAssert.assertTrue(MDMId > 0,"Текущее значение тега MDMId " + MDMId + " ,а должно быть больше 0");
 
-                    softAssert.assertTrue(firstName.matches(("^[a-zA-Z]+$")),"Текущее значение тега FirstName " + firstName +
-                                                                        " , ,а должно содержать только латинкские буквы");
-                    softAssert.assertTrue(lastName.matches(("^[a-zA-Z]+$")),"Текущее значение тега LastName " + lastName +
-                                                                        " ,а должно содержать только латинкские буквы");
-                    softAssert.assertTrue(middleName.matches(("^[a-zA-Z]+$")),"Текущее значение тега MiddleName " + middleName +
-                                                                        " ,а должно содержать только латинкские буквы");
+                    softAssert.assertTrue(StabId > 0,
+                                            "Текущее значение тега StabId " + StabId + " ,а должно быть больше 0");
+                    softAssert.assertTrue(MDMId > 0,
+                                            "Текущее значение тега MDMId " + MDMId + " ,а должно быть больше 0");
+                    softAssert.assertTrue(firstName.matches(("^[a-zA-Z]+$")),
+                                            "Текущее значение тега FirstName " + firstName +
+                                                    ",а должно содержать только латинкские буквы");
+                    softAssert.assertTrue(lastName.matches(("^[a-zA-Z]+$")),
+                                            "Текущее значение тега LastName " + lastName +
+                                                    " ,а должно содержать только латинкские буквы");
+                    softAssert.assertTrue(middleName.matches(("^[a-zA-Z]+$")),
+                                            "Текущее значение тега MiddleName " + middleName +
+                                                    ",а должно содержать только латинкские буквы");
 
-                    softAssert.assertAll();
                     print(priority, StabId, MDMId, firstName, lastName, middleName, dul);
 //
                 } catch (NumberFormatException ex) {
                     System.out.println(ex.getMessage());
                     System.out.println("!!!!!!");
-                    Assert.assertTrue((false),"Текущее значение тега StabId " + element.getElementsByTagName("StabId").item(0).getTextContent() +
-                                                                             " выходит за пределы диапазона");
+                    Assert.assertTrue((false),"Текущее значение тега StabId "
+                                            + element.getElementsByTagName("StabId").item(0).getTextContent() +
+                                            " выходит за пределы диапазона");
 
-                    Assert.assertTrue((MDMId > min_int) && (MDMId < max_int),"Текущее значение тега MDMId " + MDMId
-                            + " выходит за пределы диапазона");
+                    Assert.assertTrue((false), "Текущее значение тега MDMId "
+                                            + element.getElementsByTagName("MDMId").item(0).getTextContent() +
+                                            " выходит за пределы диапазона");
+
                 }
             }
         }
+        softAssert.assertAll();
     }
 
-    @AfterMethod
-    public void tearDown() { }
 }
