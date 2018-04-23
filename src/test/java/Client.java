@@ -2,9 +2,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,15 +68,11 @@ public class Client {
             System.out.println("List of Clients: ");
             System.out.println();
 
-            System.out.println("Root element " + document.getDocumentElement().getNodeName());
-            System.out.println("============================");
-
             NodeList nodeList = document.getElementsByTagName("Client");
 
             for (int i=0; i<nodeList.getLength();i++){
                 Node node = nodeList.item(i);
                 System.out.println();
-                ///System.out.println("Текущий элемент " + node.getNodeName());
 
                 if (Node.ELEMENT_NODE == node.getNodeType()){
                     Element element = (Element) node;
@@ -101,6 +101,58 @@ public class Client {
                 middleName + "\n" + "Birthday: " + birthday +  "\n" + "Primary City: " + primaryCity +  "\n" + "AmountUSD: "+
                 amountUSD +  "\n" + "Gender: " + gender;
         return prinClient;
+    }
+
+    public List<Client> getByGender(String gender, String path){
+        List<Client> list= new ArrayList<Client>();
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = null;
+        try {
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        Document doc = null;
+        try {
+             doc= builder.parse(path);
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        XPathFactory xPathfactory = XPathFactory.newInstance();
+        XPath xpath = xPathfactory.newXPath();
+        try {
+            XPathExpression expr = xpath.compile(".//Client[@gender = 'male']");
+
+            NodeList nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+
+            for (int i=0; i < nl.getLength();i++){
+                Node node = nl.item(i);
+                System.out.println();
+
+                if (Node.ELEMENT_NODE == node.getNodeType()){
+                    Element element = (Element) node;
+                    Client clients = new Client();
+                    clients.lastName = element.getElementsByTagName("LastName").item(0).getTextContent();
+                    clients.firstName = element.getElementsByTagName("FirstName").item(0).getTextContent();
+                    clients.middleName = element.getElementsByTagName("MiddleName").item(0).getTextContent();
+                    clients.birthday = element.getElementsByTagName("BirthDay").item(0).getTextContent();
+                    clients.primaryCity = element.getElementsByTagName("PrimaryCity").item(0).getTextContent();
+                    clients.amountUSD = element.getElementsByTagName("Amount").item(0).getTextContent();
+                    clients.gender = element.getAttribute("gender");
+
+                    list.add(clients);
+                }
+            }
+
+        } catch (XPathExpressionException e) {
+            System.out.println(e.getMessage());
+
+        }
+
+        return list;
     }
 }
 
