@@ -4,17 +4,33 @@
 		<LastName>White</LastName>
 		<FirstName>Bob</FirstName>
 		<MiddleName>Jerry</MiddleName>
-		<BirthDay>11/07/1976</BirthDay>
+		<BirthDay>1976/07/11</BirthDay>
 		<PrimaryCity>London</PrimaryCity>
 		<Amount curr = "USD">24384</Amount>
 	</Client>
+    <Client gender = "male">
+        <LastName>Mirrel</LastName>
+        <FirstName>Bob</FirstName>
+        <MiddleName>Kerry</MiddleName>
+        <BirthDay>1976/07/11</BirthDay>
+        <PrimaryCity>London</PrimaryCity>
+        <Amount curr = "RUB">24384</Amount>
+    </Client>
 	<Client gender = "female">
 		<LastName>Brown</LastName>
 		<FirstName>Mary</FirstName>
 		<MiddleName>Lorry</MiddleName>
-		<BirthDay>12/09/1998</BirthDay>
+		<BirthDay>2019/09/12</BirthDay>
 		<PrimaryCity>Paris</PrimaryCity>
 		<Amount curr = "USD">5676</Amount>
+	</Client>
+	<Client gender = "female">
+		<LastName>Black</LastName>
+		<FirstName>Irisha</FirstName>
+		<MiddleName>Molly</MiddleName>
+		<BirthDay>1993/07/19</BirthDay>
+		<PrimaryCity>Paris</PrimaryCity>
+		<Amount curr = "RUB">5676</Amount>
 	</Client>
 </Cl>
 

@@ -9,8 +9,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Client {
     private String lastName;
@@ -148,5 +152,60 @@ public class Client {
 
         }
         return list;
+    }
+
+    public static List<Client> getSpecific(String gender, String currency, Date date, String path) throws ParseException {
+
+        List<Client> listWithCurr= new ArrayList<Client>();
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = null;
+        try {
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        Document doc = null;
+        try {
+            doc= builder.parse(path);
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        try {
+            SimpleDateFormat ft= new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+            String data = ft.format(date);
+            NodeList nd = (NodeList)xPath.evaluate(".//Client[@gender = '" + gender + "'" +
+                            "and number(translate(BirthDay,' / ','')) > " + data + " ]" +
+                            "                                   /Amount[@curr = '"+ currency +"']//parent::Client",
+                    doc.getDocumentElement(),XPathConstants.NODESET);
+
+            for (int i=0; i < nd.getLength();i++){
+                Node node = nd.item(i);
+                System.out.println();
+
+                if (Node.ELEMENT_NODE == node.getNodeType()){
+                    Element element = (Element) node;
+                    Client client = new Client();
+                    client.lastName = element.getElementsByTagName("LastName").item(0).getTextContent();
+                    client.firstName = element.getElementsByTagName("FirstName").item(0).getTextContent();
+                    client.middleName = element.getElementsByTagName("MiddleName").item(0).getTextContent();
+                    client.birthday = element.getElementsByTagName("BirthDay").item(0).getTextContent();
+                    client.primaryCity = element.getElementsByTagName("PrimaryCity").item(0).getTextContent();
+                    client.amountUSD = element.getElementsByTagName("Amount").item(0).getTextContent();
+                    client.gender = element.getAttribute("gender");
+
+                    listWithCurr.add(client);
+                }
+            }
+
+        } catch (XPathExpressionException e) {
+            System.out.println(e.getMessage());
+
+        }
+        return listWithCurr;
     }
 }
