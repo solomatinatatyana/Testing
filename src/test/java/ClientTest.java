@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientTest {
+
     public static String path = "client.xml";
 
     public static void main(String[] args) {

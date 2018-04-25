@@ -147,7 +147,6 @@ public class Client {
             System.out.println(e.getMessage());
 
         }
-
         return list;
     }
 }
