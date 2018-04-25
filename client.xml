@@ -8,7 +8,7 @@
 		<PrimaryCity>London</PrimaryCity>
 		<Amount curr = "USD">24384</Amount>
 	</Client>
-	<Client gender = "male">
+	<Client gender = "female">
 		<LastName>Brown</LastName>
 		<FirstName>Mary</FirstName>
 		<MiddleName>Lorry</MiddleName>

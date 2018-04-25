@@ -22,6 +22,10 @@ public class ClientTest {
 
         List<Client> clients1 = Client.readFromXml(path);
         System.out.println(clients1.get(1).toString());
+        //List<Client> clients = Client.
+        List<Client> clientGen = Client.getByGender("female",path);
+        System.out.println(clientGen.toString());
+
 
     }
 }

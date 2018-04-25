@@ -66,8 +66,6 @@ public class Client {
 
             Node root = document.getDocumentElement();
             System.out.println("List of Clients: ");
-            System.out.println();
-
             NodeList nodeList = document.getElementsByTagName("Client");
 
             for (int i=0; i<nodeList.getLength();i++){
@@ -98,12 +96,12 @@ public class Client {
     public String toString() {
 
         String prinClient = "First Name: "+ firstName+ "\n" + "Last Name: " + lastName + "\n"+ "Middle Name: " +
-                middleName + "\n" + "Birthday: " + birthday +  "\n" + "Primary City: " + primaryCity +  "\n" + "AmountUSD: "+
-                amountUSD +  "\n" + "Gender: " + gender;
+                middleName + "\n" + "Birthday: " + birthday +  "\n" + "Primary City: " + primaryCity +  "\n" + "Amount: "+
+                amountUSD +  "\n" + "Gender: " + gender + "\n"+ "\n";
         return prinClient;
     }
 
-    public List<Client> getByGender(String gender, String path){
+    public static List<Client> getByGender(String gender,String path){
         List<Client> list= new ArrayList<Client>();
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -115,35 +113,33 @@ public class Client {
         }
         Document doc = null;
         try {
-             doc= builder.parse(path);
+            doc= builder.parse(path);
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        XPathFactory xPathfactory = XPathFactory.newInstance();
-        XPath xpath = xPathfactory.newXPath();
+
+        XPath xPath = XPathFactory.newInstance().newXPath();
         try {
-            XPathExpression expr = xpath.compile(".//Client[@gender = 'male']");
-
-            NodeList nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-
-            for (int i=0; i < nl.getLength();i++){
-                Node node = nl.item(i);
+            NodeList nd = (NodeList)xPath.evaluate(".//Client[@gender = '" + gender + "']",
+                    doc.getDocumentElement(),XPathConstants.NODESET);
+            for (int i=0; i < nd.getLength();i++){
+                Node node = nd.item(i);
                 System.out.println();
 
                 if (Node.ELEMENT_NODE == node.getNodeType()){
                     Element element = (Element) node;
-                    Client clients = new Client();
-                    clients.lastName = element.getElementsByTagName("LastName").item(0).getTextContent();
-                    clients.firstName = element.getElementsByTagName("FirstName").item(0).getTextContent();
-                    clients.middleName = element.getElementsByTagName("MiddleName").item(0).getTextContent();
-                    clients.birthday = element.getElementsByTagName("BirthDay").item(0).getTextContent();
-                    clients.primaryCity = element.getElementsByTagName("PrimaryCity").item(0).getTextContent();
-                    clients.amountUSD = element.getElementsByTagName("Amount").item(0).getTextContent();
-                    clients.gender = element.getAttribute("gender");
+                    Client client = new Client();
+                    client.lastName = element.getElementsByTagName("LastName").item(0).getTextContent();
+                    client.firstName = element.getElementsByTagName("FirstName").item(0).getTextContent();
+                    client.middleName = element.getElementsByTagName("MiddleName").item(0).getTextContent();
+                    client.birthday = element.getElementsByTagName("BirthDay").item(0).getTextContent();
+                    client.primaryCity = element.getElementsByTagName("PrimaryCity").item(0).getTextContent();
+                    client.amountUSD = element.getElementsByTagName("Amount").item(0).getTextContent();
+                    client.gender = element.getAttribute("gender");
 
-                    list.add(clients);
+                    list.add(client);
                 }
             }
 
@@ -155,4 +151,3 @@ public class Client {
         return list;
     }
 }
-
