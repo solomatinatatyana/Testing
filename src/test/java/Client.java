@@ -1,3 +1,5 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -8,7 +10,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -208,4 +214,79 @@ public class Client {
         }
         return listWithCurr;
     }
+
+
+    public static void getTheReachestInDollars(String path) throws IOException {
+
+        //String str = "http://api.fixer.io/latest?base="+currencyBase+"&symbols="+currencyTarget+"";;
+
+        URL url = new URL("http://api.fixer.io/latest?base=RUB&symbols=USD");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        int status = con.getResponseCode();
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer content = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            content.append(inputLine);
+        }
+        in.close();
+        System.out.println(content.toString());
+
+        //Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //String json = gson.toJson(content);
+        //System.out.println(json);
+        //con.disconnect();
+
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = null;
+        try {
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        Document doc = null;
+        try {
+            doc= builder.parse(path);
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        try {
+            NodeList nd = (NodeList)xPath.evaluate("",
+                    doc.getDocumentElement(),XPathConstants.NODESET);
+            for (int i=0; i < nd.getLength();i++){
+                Node node = nd.item(i);
+                System.out.println();
+
+                if (Node.ELEMENT_NODE == node.getNodeType()){
+                    Element element = (Element) node;
+                    Client client = new Client();
+                    client.lastName = element.getElementsByTagName("LastName").item(0).getTextContent();
+                    client.firstName = element.getElementsByTagName("FirstName").item(0).getTextContent();
+                    client.middleName = element.getElementsByTagName("MiddleName").item(0).getTextContent();
+                    client.birthday = element.getElementsByTagName("BirthDay").item(0).getTextContent();
+                    client.primaryCity = element.getElementsByTagName("PrimaryCity").item(0).getTextContent();
+                    client.amountUSD = element.getElementsByTagName("Amount").item(0).getTextContent();
+                    client.gender = element.getAttribute("gender");
+
+
+                }
+            }
+
+        } catch (XPathExpressionException e) {
+            System.out.println(e.getMessage());
+
+        }
+        //return reachestClient;
+        return;
+    }
+
 }
